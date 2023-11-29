@@ -150,8 +150,8 @@ class SpeciesFormH(HeaderFile):
 
         # add definition
         self.set_line(self.prevSpeciesIdx + 1, f"#define SPECIES_{species.upper()} {self.prevSpeciesNum + 1}\n\n")
-        # update FORMS_START
-        self.set_line(self.findLine("#define FORMS_START"), f"#define FORMS_START SPECIES_{species.upper()}\n")
+        # update SPECIES_EGG
+        self.set_line(self.findLine("#define SPECIES_EGG"), f"#define SPECIES_EGG SPECIES_{species.upper()}\n")
 
 
 class SpeciesInfoH(HeaderFile):
@@ -499,37 +499,37 @@ class PokemonFormH(HeaderFile):
         idx = self.findLine(f'gMonFrontPic_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u32 gMonFrontPic_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/front.4bpp.lz\");\n')
+        self.set_line(idx, f'const u32 gMonFrontPic_{species.title()}_{form.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/front.4bpp.lz\");\n')
 
         # back pic
         idx = self.findLine(f'gMonBackPic_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u32 gMonBackPic_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/back.4bpp.lz\");\n')
+        self.set_line(idx, f'const u32 gMonBackPic_{species.title()}_{form.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/back.4bpp.lz\");\n')
 
         # palette
         idx = self.findLine(f'gMonPalette_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u32 gMonPalette_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/normal.gbapal.lz\");\n')
+        self.set_line(idx, f'const u32 gMonPalette_{species.title()}_{form.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/normal.gbapal.lz\");\n')
 
         # shiny palette
         idx = self.findLine(f'gMonShinyPalette_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u32 gMonShinyPalette_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/shiny.gbapal.lz\");\n')
+        self.set_line(idx, f'const u32 gMonShinyPalette_{species.title()}_{form.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/shiny.gbapal.lz\");\n')
 
         # icon
         idx = self.findLine(f'gMonIcon_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u8 gMonIcon_{species.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/icon.4bpp\");\n')
+        self.set_line(idx, f'const u8 gMonIcon_{species.title()}_{form.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/icon.4bpp\");\n')
 
         #footprint
         idx = self.findLine(f'gMonFootprint_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u8 gMonFootprint_{species.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/footprint.1bpp\");\n')
+        self.set_line(idx, f'const u8 gMonFootprint_{species.title()}_{form.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/footprint.1bpp\");\n')
 
 class LevelUpLearnsetsH(HeaderFile):
     def __init__(self, path: str):

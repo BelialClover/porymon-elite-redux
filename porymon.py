@@ -42,7 +42,7 @@ def main():
     if version_path == "vanilla":
         assets = ["front.png", "anim_front.png", "back.png", "footprint.png", "icon.png", "normal.pal", "shiny.pal"]
     elif version_path == "expansion":    
-        assets = ["anim_front.png", "back.png", "footprint.png", "icon.png", "normal.pal", "shiny.pal"]
+        assets = ["front.png", "back.png", "footprint.png", "icon.png", "normal.pal", "shiny.pal"]
 
     # raise error if some asset or the directory does not exist
     if not (os.path.exists(join(pory_path, version_path, species))) or not assetsExist(join(pory_path, version_path, species), assets):
@@ -54,7 +54,7 @@ def main():
     porymon
     ├── tomato
     │      ├── pokemon_data.json
-    │      ├── anim_front.png
+    │      ├── front.png
     │      ├── back.png
     │      ├── icon.png
     │      └── footprint.png

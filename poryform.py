@@ -138,7 +138,7 @@ def editFiles(pory_path, version_path, config, module):
     species_info = module.SpeciesInfoH(join(config.pokeemerald_path, src_data_pokemon, "base_stats.h"))
     species_info.appendData(pokemon_data.formated_species_info, species_header.prevSpecies)
 
-    species_names = module.SpeciesNamesH(join(config.pokeemerald_path, "src", "data", "text", "species_names.h"))
+    species_names = module.SpeciesNamesFormsH(join(config.pokeemerald_path, "src", "data", "text", "species_names.h"))
     species_names.appendData(pokemon_data.species, species_header.prevSpecies)
 
     # Pokedex
