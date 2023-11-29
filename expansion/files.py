@@ -120,6 +120,40 @@ class SpeciesH(HeaderFile):
         self.set_line(self.findLine("#define FORMS_START"), f"#define FORMS_START SPECIES_{species.upper()}\n")
 
 
+class SpeciesFormH(HeaderFile):
+    def __init__(self, path: str):
+        super().__init__(path)
+        self._findPrevMon()
+
+    def pokemonExists(self, species: str) -> bool:
+        return False if self.findLine(f"#define SPECIES_{species.upper()}") == -1 else True
+
+    def _findPrevMon(self):
+        pattern = re.compile(r"#define SPECIES_(\w+)\s+(\d+)")
+        self.prevSpeciesNum = -1
+
+        for count, line in enumerate(self._file):
+            match = re.search(pattern, line)
+            if match:
+                name = match.group(1)
+                val = int(match.group(2))
+                if val > self.prevSpeciesNum:
+                    self.prevSpecies = name
+                    self.prevSpeciesNum = val
+                    self.prevSpeciesIdx = count
+
+
+    def appendData(self, species):
+        if self.pokemonExists(species):
+            print(f"Species is already defined!")
+            sys.exit()
+
+        # add definition
+        self.set_line(self.prevSpeciesIdx + 1, f"#define SPECIES_{species.upper()} {self.prevSpeciesNum + 1}\n\n")
+        # update FORMS_START
+        self.set_line(self.findLine("#define FORMS_START"), f"#define FORMS_START SPECIES_{species.upper()}\n")
+
+
 class SpeciesInfoH(HeaderFile):
     def __init__(self, path):
         super().__init__(path)
@@ -139,6 +173,16 @@ class SpeciesNamesH(HeaderFile):
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, f'[SPECIES_{species.upper()}] = _(\"{species.title()}\"),\n')
+
+class SpeciesNamesFormsH(HeaderFile):
+    def __init__(self, path: str):
+        super().__init__(path)
+
+    def appendData(self, species, prevMon):
+        idx = self.findLine(f'SPECIES_{prevMon.upper()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'[SPECIES_{species.upper()}] = _(\"{species.title().split("_", 1)[0]}\"),\n')
 
 class PokedexH(HeaderFile):
     def __init__(self, path: str):
@@ -313,7 +357,6 @@ class GraphicsH(HeaderFile):
         self.insertBlankLine(idx)
         self.set_line(idx, f'extern const u8 gMonFootprint_{species.title()}[];\n')
 
-
 class BackPicTableH(HeaderFile):
     def __init__(self, path: str):
         super().__init__(path)
@@ -339,7 +382,7 @@ class BackPicCoordinatesH(HeaderFile):
         super().__init__(path)
 
     def appendData(self, prevMon, formated_back_pic_coordinates):
-        idx = self.findLine(f'SPECIES_{prevMon.upper()}') + 6
+        idx = self.findLine(f'SPECIES_{prevMon.upper()}') + 5
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, formated_back_pic_coordinates)
@@ -349,7 +392,7 @@ class FrontPicCoordinatesH(HeaderFile):
         super().__init__(path)
 
     def appendData(self, prevMon, formated_front_pic_coordinates):
-        idx = self.findLine(f'SPECIES_{prevMon.upper()}') + 6
+        idx = self.findLine(f'SPECIES_{prevMon.upper()}') + 5
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, formated_front_pic_coordinates)
@@ -360,20 +403,20 @@ class FrontPicAnimsH(HeaderFile):
 
     def appendData(self, species, prevMon, formated_front_pic_anim):
         # anim table
-        idx = self.findLine(f"sAnim_{prevMon.upper()}") + 6
+        idx = self.findLine(f"sAnim_{prevMon.upper()}") + 5
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, formated_front_pic_anim)
         
-        idx = self.findLine(f"sAnims_{prevMon.upper()}") + 5
+        idx = self.findLine(f"sAnims_{prevMon.upper()}") + 4
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f"static const union AnimCmd *const sAnims_{species.upper()}[] =" + "{\n    sAnim_GeneralFrame0,\n" + f"    sAnim_{species.upper()}_1" + ",\n};\n")
+        self.set_line(idx, f"\nstatic const union AnimCmd *const sAnims_{species.upper()}[] =" + "{\n    sAnim_GeneralFrame0,\n" + f"    sAnim_{species.upper()}_1" + ",\n};\n")
         
-        idx = self.findLine(f"ANIM_CMD({prevMon.upper()}") + 1
+        idx = self.findLine(f"ANIM_CMD({prevMon.upper()}") + 2
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f"    ANIM_CMD({species.upper()}),")
+        self.set_line(idx, f"    ANIM_CMD({species.upper()}),\n")
 
 class FootprintTableH(HeaderFile):
     def __init__(self, path: str):
@@ -414,7 +457,7 @@ class PokemonH(HeaderFile):
         idx = self.findLine(f'gMonFrontPic_{prevMon.title()}') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'const u32 gMonFrontPic_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/anim_front.4bpp.lz\");\n')
+        self.set_line(idx, f'const u32 gMonFrontPic_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/front.4bpp.lz\");\n')
 
         # back pic
         idx = self.findLine(f'gMonBackPic_{prevMon.title()}') + 1
@@ -445,6 +488,48 @@ class PokemonH(HeaderFile):
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, f'const u8 gMonFootprint_{species.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/footprint.1bpp\");\n')
+
+
+class PokemonFormH(HeaderFile):
+    def __init__(self, path: str):
+        super().__init__(path)
+
+    def appendData(self, species: str, form: str, prevMon: str = "BULBASAUR"):
+        # front pic
+        idx = self.findLine(f'gMonFrontPic_{prevMon.title()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'const u32 gMonFrontPic_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/front.4bpp.lz\");\n')
+
+        # back pic
+        idx = self.findLine(f'gMonBackPic_{prevMon.title()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'const u32 gMonBackPic_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/back.4bpp.lz\");\n')
+
+        # palette
+        idx = self.findLine(f'gMonPalette_{prevMon.title()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'const u32 gMonPalette_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/normal.gbapal.lz\");\n')
+
+        # shiny palette
+        idx = self.findLine(f'gMonShinyPalette_{prevMon.title()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'const u32 gMonShinyPalette_{species.title()}[] = INCBIN_U32(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/shiny.gbapal.lz\");\n')
+
+        # icon
+        idx = self.findLine(f'gMonIcon_{prevMon.title()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'const u8 gMonIcon_{species.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/icon.4bpp\");\n')
+
+        #footprint
+        idx = self.findLine(f'gMonFootprint_{prevMon.title()}') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'const u8 gMonFootprint_{species.title()}[] = INCBIN_U8(\"graphics/pokemon/{species.casefold()}/{form.casefold()}/footprint.1bpp\");\n')
 
 class LevelUpLearnsetsH(HeaderFile):
     def __init__(self, path: str):
@@ -580,6 +665,17 @@ class PokemonC(SourceFile):
         self.insertBlankLine(idx)
         self.set_line(idx, f'    [SPECIES_{species.upper()} - 1]'.ljust(32) + f'= {animation.upper()},\n')
 
+class PokemonCForms(SourceFile):
+    def __init__(self, path: str):
+        super().__init__(path)
+
+    def appendData(self, species: str, prevMon: str, animation: str = 'ANIM_V_SQUISH_AND_BOUNCE'): # pain
+        # front anim table
+        idx = self.findLine(f'SPECIES_{prevMon.upper()} - 1') + 1
+        idx = self._handleEndif(idx)
+        self.insertBlankLine(idx)
+        self.set_line(idx, f'    [SPECIES_{species.upper()} - 1]'.ljust(32) + f' = {animation.upper()},\n')
+
 class PokemonIconC(SourceFile):
     def __init__(self, path: str):
         super().__init__(path)
@@ -601,7 +697,7 @@ class PokemonAnimationC(SourceFile):
     def __init__(self, path: str):
         super().__init__(path)
 
-    def appendData(self, species: str, prevMon: str, animation: str = 'BACK_ANIM_NONE'):
+    def appendData(self, species: str, prevMon: str, animation: str = 'BACK_ANIM_H_SLIDE'):
         start = self.findLine(f'SPECIES_{prevMon.upper()}')
         if start < 0:
             # prev mon not in list
@@ -611,4 +707,4 @@ class PokemonAnimationC(SourceFile):
 
         self._handleEndif(idx)
         self.insertBlankLine(idx)
-        self.set_line(idx, f'    [SPECIES_{species.upper()}]'.ljust(43) + f'= {animation},\n')
+        self.set_line(idx, f'    [SPECIES_{species.upper()}] ' + f'= {animation},\n')

@@ -68,8 +68,9 @@ const u8 g{name.title()}PokedexText[] = _(
 def formatEvolutionData(name, evolution_data):
     if len(evolution_data) <= 0: #safety
         return ""
+    
+    formated_evolution_data = f'    [{evolution_data[0]["targetSpecies"]}]'.ljust(36) + '= {' + f'{{{evolution_data[0]["method"]}, {evolution_data[0]["param"]}, SPECIES_{name.upper()} }}'
 
-    formated_evolution_data = f'    [SPECIES_{name.upper()}]'.ljust(36) + '= {' + f'{{{evolution_data[0]["method"]}, {evolution_data[0]["param"]}, {evolution_data[0]["targetSpecies"]}}}'
     if len(evolution_data) > 1:
         formated_evolution_data += ",\n"
     for i in range(1, len(evolution_data)):
@@ -147,7 +148,7 @@ def formatFrontPicAnim(name):
 def formatFormsTable(name, otherForms):
     if not len(otherForms):
         return ''
-    formated_forms_table = f'static const u16 s{otherForms[0].title()}FormSpeciesIdTable[] = ' + "{\n"
+    formated_forms_table = f'\nstatic const u16 s{otherForms[0].title()}FormSpeciesIdTable[] = ' + "{\n"
     for form in otherForms:
         formated_forms_table += f'    SPECIES_{form.upper()},\n'
     formated_forms_table += "    FORM_SPECIES_END,\n};"
