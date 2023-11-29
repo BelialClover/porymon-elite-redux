@@ -9,9 +9,9 @@ choice /c 12 /n /m "Enter your choice:"
 
 REM Run the Python command
 if errorlevel 2 (
-    python porymon.py %name%
-) else (
     python poryform.py %name%
+) else (
+    python porymon.py %name%
 )
 
 REM Ask the user if they want to add a new mon
