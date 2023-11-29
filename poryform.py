@@ -155,9 +155,9 @@ def editFiles(pory_path, version_path, config, module):
     # pokedex_orders.appendData(pokemon_data.species, pokemon_data.pokedex_data["height"], pokemon_data.pokedex_data["weight"])
 
     # Evolution
-    if pokemon_data.hasEvo:
-        evolution_data = module.EvolutionH(join(config.pokeemerald_path, src_data_pokemon, "evolution.h"))
-        evolution_data.appendData(pokemon_data.formated_evolution_data)
+    # if pokemon_data.hasEvo:
+    #     evolution_data = module.EvolutionH(join(config.pokeemerald_path, src_data_pokemon, "evolution.h"))
+    #     evolution_data.appendData(pokemon_data.formated_evolution_data)
 
     # Grapics
     graphics_declaration = module.GraphicsH(join(config.pokeemerald_path, "include", "graphics.h"))

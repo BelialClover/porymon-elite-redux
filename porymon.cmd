@@ -23,5 +23,6 @@ set /p addNew=Do you want to add a new Pokemon? (y/n):
 
 if /i "%addNew%"=="y" (
     REM Reset the script
+    clear
     call porymon.cmd
 )
