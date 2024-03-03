@@ -88,38 +88,20 @@ def formatLevelUplearnset(name, level_up_learnset):
     return formated_level_up_learnset
 
 def formatTeachablelearnset(name, teachable_learnset):
-    foramted_teachable_learnset = f'    [SPECIES_{name.upper()}]   = TMHM_LEARNSET ('
+    foramted_teachable_learnset = f'    [SPECIES_{name.upper()}] = TMHM_LEARNSET'
     noOr = True
-    for move in teachable_learnset["TMHM1"]:
-        if noOr:
-            foramted_teachable_learnset += f'TMHM1({move})'
-            noOr = False
-        else:
-            foramted_teachable_learnset += f'\n                                        | TMHM1({move})'
-    foramted_teachable_learnset += ","
-    noOr = True
-    for move in teachable_learnset["TMHM2"]:
-        if noOr:
-            foramted_teachable_learnset += f'\n                                          TMHM2({move})'
-            noOr = False
-        else:
-            foramted_teachable_learnset += f'\n                                        | TMHM2({move})'
-    foramted_teachable_learnset += "),\n"
+    for move in teachable_learnset:
+        oramted_teachable_learnset += f'\n        TM({move})'
+    oramted_teachable_learnset += f'\n        TMHM_LEARNSET_END'
     return foramted_teachable_learnset
-
-def formatTutorPointers(name, tutor_pointers):
-    formated_tutor_pointer = f'	[SPECIES_{name.upper()}] = ' + "{"
-    for pointer in tutor_pointers:
-        formated_tutor_pointer += pointer + ","
-    formated_tutor_pointer += "},\n";
-    return formated_tutor_pointer
     
 def formatTutorMoves(name, tutor_moves):
-    formated_tutor_moves = f'	[SPECIES_{name.upper()}] = ' + "{\n"
-    for move in tutor_moves:
-        formated_tutor_moves += f'		{move},\n'
-    formated_tutor_moves += "	},\n"
-    return formated_tutor_moves
+    foramted_teachable_learnset = f'    [SPECIES_{name.upper()}] = TUTOR_LEARNSET'
+    noOr = True
+    for move in teachable_learnset:
+        oramted_teachable_learnset += f'\n        TUTOR({move})'
+    oramted_teachable_learnset += f'\n        TUTOR_LEARNSET_END'
+    return foramted_teachable_learnset
         
     
 def formatEgglearnset(name, egg_learnset):

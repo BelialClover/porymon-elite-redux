@@ -222,9 +222,6 @@ def editFiles(pory_path, version_path, config, module):
     elif version_path == "expansion":
         teachable_lernset = module.TeachableLearnsetH(join(config.pokeemerald_path, src_data_pokemon, "tmhm_learnsets.h"))
         teachable_lernset.appendData(pokemon_data.formated_teachable_learnset, species_header.prevSpecies)
-
-        teachable_lernset_pointers = module.TeachableLearnsetPointersH(join(config.pokeemerald_path, src_data_pokemon, "tutor_learnsets.h"))
-        teachable_lernset_pointers.appendData(pokemon_data.formated_tutor_pointers, pokemon_data.species, species_header.prevSpecies)
         
         teachable_lernset_moves = module.TutorLearnsetMovesH(join(config.pokeemerald_path, src_data_pokemon, "tutor_learnsets.h"))
         teachable_lernset_moves.appendData(pokemon_data.formated_tutor_moves, pokemon_data.species, species_header.prevSpecies)

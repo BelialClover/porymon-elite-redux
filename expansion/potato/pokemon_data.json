@@ -91,18 +91,11 @@
         { "level" : 10, "move" : "MOVE_EMBER" }
     ],
 
-    "teachable_learnset" : {
-        "TMHM1": [
-            "TM24_THUNDERBOLT",
-            "TM25_THUNDER"
-        ],
-        "TMHM2": [
-            "TM90_SUBSTITUTE",
-            "TM94_SUCKER_PUNCH"
-        ]
-    },
-    "tutor_pointers": [
-        "0x00000000","0x00000000","0x00000000","0x00000000","0x00000000"
+    "teachable_learnset" : [
+        "MOVE_THUNDERBOLT",
+        "MOVE_THUNDER",
+        "MOVE_SUBSTITUTE",
+        "MOVE_SUCKER_PUNCH"
     ],
     "tutor_moves" : [
         "MOVE_IRON_HEAD",

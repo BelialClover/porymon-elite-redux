@@ -46,7 +46,6 @@ class PokemonData(JsonFile):
     def _initMoveData(self):
         self.level_up_learnset = self._file["level_up_learnset"]
         self.teachable_learnset = self._file["teachable_learnset"]
-        self.tutor_pointers = self._file["tutor_pointers"]
         self.tutor_moves = self._file["tutor_moves"]
         self.egg_learnset = self._file["egg_learnset"]
         self.hasEggMove = True if len(self._file["egg_learnset"]) > 0 else False
@@ -71,7 +70,6 @@ class PokemonData(JsonFile):
     def _formatLearnsets(self):
         self.formated_level_up_learnset = formatLevelUplearnset(self.species, self.level_up_learnset)
         self.formated_teachable_learnset = formatTeachablelearnset(self.species, self.teachable_learnset)
-        self.formated_tutor_pointers = formatTutorPointers(self.species, self.tutor_pointers)
         self.formated_tutor_moves = formatTutorMoves(self.species, self.tutor_moves)
         self.formated_egg_learnset = formatEgglearnset(self.species, self.egg_learnset)
     def _formatPicCoordinates(self):
@@ -556,27 +554,17 @@ class TeachableLearnsetH(HeaderFile):
         super().__init__(path)
 
     def appendData(self, formated_teachable_learnset: str, prevMon: str = "BULBASAUR"):
-        idx = self.findLine(")),", self.findLine(f'SPECIES_{prevMon.upper()}')) + 1
+        idx = self.findLine("TMHM_LEARNSET_END", self.findLine(f'SPECIES_{prevMon.upper()}')) + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, formated_teachable_learnset)
-
-class TeachableLearnsetPointersH(HeaderFile):
-    def __init__(self, path: str):
-        super().__init__(path)
-
-    def appendData(self, formated_tutor_pointers: str ,species: str, prevMon: str):
-        idx = self.findLine(f'SPECIES_{prevMon.upper()}', self.findLine("sTutorLearnsets")) + 1
-        idx = self._handleEndif(idx)
-        self.insertBlankLine(idx)
-        self.set_line(idx, formated_tutor_pointers)
 
 class TutorLearnsetMovesH(HeaderFile):
     def __init__(self, path: str):
         super().__init__(path)
 
     def appendData(self, formated_tutor_moves: str ,species: str, prevMon: str):
-        idx = self.findLine(f'gNewTutorLearnsets') + 1
+        idx = self.findLine(f'TUTOR_LEARNSET_END') + 1
         idx = self._handleEndif(idx)
         self.insertBlankLine(idx)
         self.set_line(idx, formated_tutor_moves)
